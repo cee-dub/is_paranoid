@@ -61,6 +61,13 @@ describe Android do
     Android.first(:conditions => {:name => 'R2D2'}).should be_blank
   end
 
+  it "should not show up in the relationship to the owner once deleted when using :include" do
+    @luke.androids.size.should == 2
+    @r2d2.destroy
+    @luke_including_androids = Person.find(@luke.id, :include => :androids)
+    @luke_including_androids.androids.size.should == 1
+  end
+
   it "should be able to find deleted items via find_with_destroyed" do
     @r2d2.destroy
     Android.find(:first, :conditions => {:name => 'R2D2'}).should be_blank
